@@ -1,0 +1,76 @@
+[
+  {
+    "type": "repository",
+    "url": "https://github.com/carlosms-test-org/test-repo",
+    "owner": "https://github.com/carlosms-test-org",
+    "name": "test-repo",
+    "description": null,
+    "website": null,
+    "private": false,
+    "has_issues": true,
+    "has_wiki": true,
+    "has_downloads": true,
+    "labels": [
+      {
+        "url": "https://github.com/carlosms-test-org/test-repo/labels/bug",
+        "name": "bug",
+        "color": "d73a4a",
+        "created_at": "2019-01-08T16:36:10Z"
+      },
+      {
+        "url": "https://github.com/carlosms-test-org/test-repo/labels/duplicate",
+        "name": "duplicate",
+        "color": "cfd3d7",
+        "created_at": "2019-01-08T16:36:10Z"
+      },
+      {
+        "url": "https://github.com/carlosms-test-org/test-repo/labels/enhancement",
+        "name": "enhancement",
+        "color": "a2eeef",
+        "created_at": "2019-01-08T16:36:11Z"
+      },
+      {
+        "url": "https://github.com/carlosms-test-org/test-repo/labels/good%20first%20issue",
+        "name": "good first issue",
+        "color": "7057ff",
+        "created_at": "2019-01-08T16:36:11Z"
+      },
+      {
+        "url": "https://github.com/carlosms-test-org/test-repo/labels/help%20wanted",
+        "name": "help wanted",
+        "color": "008672",
+        "created_at": "2019-01-08T16:36:11Z"
+      },
+      {
+        "url": "https://github.com/carlosms-test-org/test-repo/labels/invalid",
+        "name": "invalid",
+        "color": "e4e669",
+        "created_at": "2019-01-08T16:36:11Z"
+      },
+      {
+        "url": "https://github.com/carlosms-test-org/test-repo/labels/question",
+        "name": "question",
+        "color": "d876e3",
+        "created_at": "2019-01-08T16:36:11Z"
+      },
+      {
+        "url": "https://github.com/carlosms-test-org/test-repo/labels/wontfix",
+        "name": "wontfix",
+        "color": "ffffff",
+        "created_at": "2019-01-08T16:36:11Z"
+      }
+    ],
+    "collaborators": [
+
+    ],
+    "created_at": "2019-01-08T16:36:10Z",
+    "git_url": "tarball://root/repositories/carlosms-test-org/test-repo.git",
+    "default_branch": "master",
+    "webhooks": [
+
+    ],
+    "public_keys": [
+
+    ]
+  }
+]

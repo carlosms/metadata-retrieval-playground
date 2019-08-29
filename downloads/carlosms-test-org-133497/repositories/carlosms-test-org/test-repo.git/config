@@ -1,0 +1,8 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+[remote "origin"]
+	url = git@github-dfs-4b560e3:/data/repositories/f/nw/fe/a1/5e/198305341/164690953.git
+	fetch = +refs/*:refs/*
+	mirror = true

@@ -1,0 +1,38 @@
+[
+  {
+    "type": "pull_request_review_comment",
+    "url": "https://github.com/carlosms-test-org/test-repo/pull/3/files#r318617070",
+    "pull_request": "https://github.com/carlosms-test-org/test-repo/pull/3",
+    "pull_request_review": "https://github.com/carlosms-test-org/test-repo/pull/3/files#pullrequestreview-280877061",
+    "user": "https://github.com/carlosms-bot",
+    "body": "A line comment with suggestion inside a review group\r\n\r\n```suggestion\r\ntest repo new\r\n```",
+    "formatter": "markdown",
+    "diff_hunk": "@@ -1 +1,2 @@\n test repo",
+    "path": "README.md",
+    "position": 1,
+    "original_position": 1,
+    "commit_id": "34404ea4e7a62af2deb3fdfdf05614dfee6f839e",
+    "original_commit_id": "34404ea4e7a62af2deb3fdfdf05614dfee6f839e",
+    "state": 1,
+    "in_reply_to": null,
+    "created_at": "2019-08-28T14:35:26Z"
+  },
+  {
+    "type": "pull_request_review_comment",
+    "url": "https://github.com/carlosms-test-org/test-repo/pull/3/files#r318622724",
+    "pull_request": "https://github.com/carlosms-test-org/test-repo/pull/3",
+    "pull_request_review": "https://github.com/carlosms-test-org/test-repo/pull/3/files#pullrequestreview-280884459",
+    "user": "https://github.com/carlosms-bot",
+    "body": "A detached single review comment",
+    "formatter": "markdown",
+    "diff_hunk": "@@ -1 +1,2 @@\n test repo\n+",
+    "path": "README.md",
+    "position": 2,
+    "original_position": 2,
+    "commit_id": "34404ea4e7a62af2deb3fdfdf05614dfee6f839e",
+    "original_commit_id": "34404ea4e7a62af2deb3fdfdf05614dfee6f839e",
+    "state": 1,
+    "in_reply_to": null,
+    "created_at": "2019-08-28T14:45:15Z"
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "type": "issue_event",
+    "url": "https://github.com/carlosms-test-org/test-repo/issues/1#event-2589919264",
+    "issue": "https://github.com/carlosms-test-org/test-repo/issues/1",
+    "actor": "https://github.com/carlosms",
+    "event": "labeled",
+    "label": "https://github.com/carlosms-test-org/test-repo/labels/bug",
+    "label_name": "bug",
+    "label_color": "d73a4a",
+    "label_text_color": "ffffff",
+    "created_at": "2019-08-28T09:56:24Z"
+  },
+  {
+    "type": "issue_event",
+    "url": "https://github.com/carlosms-test-org/test-repo/issues/1#event-2589919435",
+    "issue": "https://github.com/carlosms-test-org/test-repo/issues/1",
+    "actor": "https://github.com/carlosms-bot",
+    "event": "assigned",
+    "subject": "https://github.com/carlosms",
+    "created_at": "2019-08-28T09:56:28Z"
+  },
+  {
+    "type": "issue_event",
+    "url": "https://github.com/carlosms-test-org/test-repo/issues/2#event-2423696915",
+    "issue": "https://github.com/carlosms-test-org/test-repo/issues/2",
+    "actor": "https://github.com/carlosms",
+    "event": "closed",
+    "created_at": "2019-06-19T10:39:48Z"
+  },
+  {
+    "type": "issue_event",
+    "url": "https://github.com/carlosms-test-org/test-repo/pull/3#event-2589920762",
+    "pull_request": "https://github.com/carlosms-test-org/test-repo/pull/3",
+    "actor": "https://github.com/carlosms",
+    "event": "assigned",
+    "subject": "https://github.com/carlosms",
+    "created_at": "2019-08-28T09:56:55Z"
+  },
+  {
+    "type": "issue_event",
+    "url": "https://github.com/carlosms-test-org/test-repo/pull/3#event-2589920957",
+    "pull_request": "https://github.com/carlosms-test-org/test-repo/pull/3",
+    "actor": "https://github.com/carlosms",
+    "event": "review_requested",
+    "subject": "https://github.com/carlosms-bot",
+    "created_at": "2019-08-28T09:56:59Z"
+  },
+  {
+    "type": "issue_event",
+    "url": "https://github.com/carlosms-test-org/test-repo/pull/4#event-2423699166",
+    "pull_request": "https://github.com/carlosms-test-org/test-repo/pull/4",
+    "actor": "https://github.com/carlosms",
+    "event": "closed",
+    "created_at": "2019-06-19T10:40:41Z"
+  }
+]

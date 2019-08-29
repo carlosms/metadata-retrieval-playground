@@ -1,0 +1,78 @@
+[
+  {
+    "type": "pull_request",
+    "url": "https://github.com/carlosms-test-org/test-repo/pull/3",
+    "user": "https://github.com/carlosms",
+    "repository": "https://github.com/carlosms-test-org/test-repo",
+    "title": "New PR",
+    "body": "",
+    "base": {
+      "ref": "master",
+      "sha": "6d15cf8422d7c7cd457dad101d3660b0a0e582a2",
+      "user": "https://github.com/carlosms-test-org",
+      "repo": "https://github.com/carlosms-test-org/test-repo"
+    },
+    "head": {
+      "ref": "carlosms-patch-1",
+      "sha": "34404ea4e7a62af2deb3fdfdf05614dfee6f839e",
+      "user": "https://github.com/carlosms-test-org",
+      "repo": "https://github.com/carlosms-test-org/test-repo"
+    },
+    "assignee": "https://github.com/carlosms",
+    "assignees": [
+      "https://github.com/carlosms"
+    ],
+    "milestone": null,
+    "labels": [
+
+    ],
+    "review_requests": [
+      {
+        "reviewer": "https://github.com/carlosms-bot",
+        "reviewer_type": "User",
+        "created_at": "2019-08-28T09:56:59Z",
+        "updated_at": "2019-08-28T09:56:59Z",
+        "dismissed_at": null
+      }
+    ],
+    "work_in_progress": false,
+    "merged_at": null,
+    "closed_at": null,
+    "created_at": "2019-06-19T10:40:13Z"
+  },
+  {
+    "type": "pull_request",
+    "url": "https://github.com/carlosms-test-org/test-repo/pull/4",
+    "user": "https://github.com/carlosms",
+    "repository": "https://github.com/carlosms-test-org/test-repo",
+    "title": "New closed PR",
+    "body": "",
+    "base": {
+      "ref": "master",
+      "sha": "6d15cf8422d7c7cd457dad101d3660b0a0e582a2",
+      "user": "https://github.com/carlosms-test-org",
+      "repo": "https://github.com/carlosms-test-org/test-repo"
+    },
+    "head": {
+      "ref": "carlosms-patch-2",
+      "sha": "97ae15511a9df035bd457cc62acb866086d55037",
+      "user": "https://github.com/carlosms-test-org",
+      "repo": "https://github.com/carlosms-test-org/test-repo"
+    },
+    "assignee": null,
+    "assignees": [
+
+    ],
+    "milestone": null,
+    "labels": [
+
+    ],
+    "review_requests": [
+
+    ],
+    "work_in_progress": false,
+    "merged_at": null,
+    "closed_at": "2019-06-19T10:40:41Z",
+    "created_at": "2019-06-19T10:40:37Z"
+  }
+]

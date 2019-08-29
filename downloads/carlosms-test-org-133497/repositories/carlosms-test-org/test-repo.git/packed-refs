@@ -1,0 +1,8 @@
+# pack-refs with: peeled fully-peeled sorted 
+bb8a3a743c97951cff14da64e5fe52c45be25f53 refs/__gh__/pull/3/rebase
+34404ea4e7a62af2deb3fdfdf05614dfee6f839e refs/heads/carlosms-patch-1
+97ae15511a9df035bd457cc62acb866086d55037 refs/heads/carlosms-patch-2
+6d15cf8422d7c7cd457dad101d3660b0a0e582a2 refs/heads/master
+34404ea4e7a62af2deb3fdfdf05614dfee6f839e refs/pull/3/head
+9a6c74babdcb43e2f9b683e7e06d85aa3c96cedc refs/pull/3/merge
+97ae15511a9df035bd457cc62acb866086d55037 refs/pull/4/head

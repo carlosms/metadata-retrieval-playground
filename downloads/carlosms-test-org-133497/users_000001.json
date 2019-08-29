@@ -1,0 +1,42 @@
+[
+  {
+    "type": "user",
+    "url": "https://github.com/carlosms",
+    "avatar_url": "https://avatars0.githubusercontent.com/u/1469173?v=4",
+    "login": "carlosms",
+    "name": "Carlos Martín",
+    "bio": "",
+    "company": "source{d}",
+    "website": "https://www.linkedin.com/in/carlosmartinsanchez",
+    "location": "Madrid, Spain",
+    "emails": [
+      {
+        "address": "1469173+carlosms@users.noreply.github.com",
+        "primary": true,
+        "verified": true
+      }
+    ],
+    "billing_plan": null,
+    "created_at": "2012-02-24T10:48:14Z"
+  },
+  {
+    "type": "user",
+    "url": "https://github.com/carlosms-bot",
+    "avatar_url": "https://avatars0.githubusercontent.com/u/41994742?v=4",
+    "login": "carlosms-bot",
+    "name": null,
+    "bio": null,
+    "company": null,
+    "website": null,
+    "location": null,
+    "emails": [
+      {
+        "address": "41994742+carlosms-bot@users.noreply.github.com",
+        "primary": true,
+        "verified": true
+      }
+    ],
+    "billing_plan": null,
+    "created_at": "2018-08-01T10:50:55Z"
+  }
+]
