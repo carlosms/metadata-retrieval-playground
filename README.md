@@ -1786,8 +1786,16 @@ $ go run cmd/metadata/main.go migration  --owner=carlosms-test-org --name=test-r
 
 ### contents comparison
 
-Sample comparison for https://github.com/carlosms-test-org/test-repo. Concussion: the json downloaded from the migration tar.gz are the same schema, but with much less fields used compared to the json returned by the API.
+Sample comparison for https://github.com/carlosms-test-org/test-repo.
 
+Concussion: the json downloaded from the migration tar.gz are a **similar** schema, but with much less fields used compared to the json returned by the API.
+
+The JSON from the migration API cannot be automatically unmarshaled into `google/go-github` objects. See `cmd/migration-unmarshal/main.go`:
+
+```
+$ go run cmd/migration-unmarshal/main.go
+panic: json: cannot unmarshal string into Go struct field PullRequest.user of type github.User
+```
 
 Download of https://developer.github.com/v3/migrations/orgs/ in [./downloads](./downloads). In this download the normal issues and PRs are separated.
 
