@@ -5,6 +5,7 @@ import (
 	"context"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/carlosms/metadata-retrieval-playground/migration"
 	v3 "github.com/carlosms/metadata-retrieval-playground/v3"
@@ -99,6 +100,8 @@ type logTransport struct {
 }
 
 func (t *logTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	t0 := time.Now()
+
 	resp, err := t.T.RoundTrip(r)
 	if err != nil {
 		return resp, err
@@ -110,7 +113,7 @@ func (t *logTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	}
 
 	t.Logger.With(
-		log.Fields{"code": resp.StatusCode, "url": r.URL, "body": string(b)},
+		log.Fields{"elapsed": time.Since(t0), "code": resp.StatusCode, "url": r.URL, "body": string(b)},
 	).Debugf("HTTP response")
 
 	resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
