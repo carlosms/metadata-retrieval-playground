@@ -29,12 +29,17 @@ func NewStdoutDownloader(httpClient *http.Client) (*GitHubDownloader, error) {
 
 	return &GitHubDownloader{
 		Storer: store.StdoutStorer{},
-		client: c,
+		client: github.NewClient(c),
 	}, nil
 }
 
 func (d GitHubDownloader) DownloadRepository(owner string, name string, version string) error {
 	logger := log.New(log.Fields{"owner": owner, "repo": name})
+
+	rate0, err := d.rateRemaining()
+	if err != nil {
+		return err
+	}
 
 	t0 := time.Now()
 
@@ -63,9 +68,24 @@ func (d GitHubDownloader) DownloadRepository(owner string, name string, version 
 	logger.With(log.Fields{"elapsed": elapsed}).Infof("issues & issue comments fetched")
 
 	elapsed = time.Since(t0)
-	logger.With(log.Fields{"total-elapsed": elapsed}).Infof("All metadata fetched")
+	rate1, err := d.rateRemaining()
+	if err != nil {
+		return err
+	}
+	rateUsed := rate0 - rate1
+
+	logger.With(log.Fields{"rate-limit-used": rateUsed, "total-elapsed": elapsed}).Infof("All metadata fetched")
 
 	return nil
+}
+
+func (d GitHubDownloader) rateRemaining() (int, error) {
+	limit, _, err := d.client.RateLimits(context.TODO())
+	if err != nil {
+		return 0, err
+	}
+
+	return limit.GetCore().Remaining, nil
 }
 
 const listOptionsPerPage = 100

@@ -6,13 +6,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/google/go-github/github"
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
 	"github.com/src-d/ghsync/utils"
 )
 
-func NewClient(httpClient *http.Client) (*github.Client, error) {
+func NewClient(httpClient *http.Client) (*http.Client, error) {
 	dirPath := filepath.Join(os.TempDir(), "ghsync")
 	err := os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {
@@ -25,7 +24,7 @@ func NewClient(httpClient *http.Client) (*github.Client, error) {
 	}
 	httpClient.Transport = &RetryTransport{T: t}
 
-	return github.NewClient(httpClient), nil
+	return httpClient, nil
 }
 
 type RemoveHeaderTransport struct {

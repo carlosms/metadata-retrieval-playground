@@ -5195,3 +5195,21 @@ The difference between the v3 **PR** list endpoint and the targz export download
 ```
 
 </details>
+
+## v4
+
+https://developer.github.com/v4/
+
+Initial tests done with github.com/shurcooL/githubv4. This lib does not have any release, and the last commit is not recent. It might be a good idea to try other libs, like https://github.com/graphql-go/graphql
+
+The JSON returned is similar to the one from the v3, but not identical.
+
+There is quick and dirty code in the `v4` dir. The downloaded data is not exactly the same fields as the ones stored by `ghsync deep`, but there are not major gaps. Issues, Comments, PR, PR comments and reviews are downloaded in the WIP code.
+Some data was skipped to avoid further definition of types, like labels or reactions.
+
+Initial tests look promising:
+`INFO All metadata fetched owner=src-d rate-limit-used=453 repo=gitbase source=v4/v4.go:120 total-elapsed=58.198817938s`
+
+With v3 the time for https://github.com/src-d/gitbase was 22m44.2s
+
+There is a missing piece: how to do pagination over the PR review comments. The API does not allow it in the same way as it does for Issue comments. Maybe there is another less obvious way. See `downloadReviewComments` in `v4/v4.go`.

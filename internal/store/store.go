@@ -28,7 +28,7 @@ func (s StdoutStorer) SaveIssue(issue *github.Issue) error {
 }
 
 func (s StdoutStorer) SaveIssueComment(comment *github.IssueComment) error {
-	fmt.Printf("issue comment data fetched %v by %s: %v\n", comment.GetIssueURL(), comment.GetUser().GetLogin(), trim(comment.GetBody()))
+	fmt.Printf("  issue comment data fetched %v by %s: %q\n", comment.GetIssueURL(), comment.GetUser().GetLogin(), trim(comment.GetBody()))
 	return nil
 }
 
@@ -38,12 +38,12 @@ func (s StdoutStorer) SavePullRequest(pr *github.PullRequest) error {
 }
 
 func (s StdoutStorer) SavePullRequestComment(comment *github.PullRequestComment) error {
-	fmt.Printf("PR comment data fetched %v by %s: %v\n", comment.GetPullRequestURL(), comment.GetUser().GetLogin(), trim(comment.GetBody()))
+	fmt.Printf("  PR comment data fetched %v by %s: %q\n", comment.GetPullRequestURL(), comment.GetUser().GetLogin(), trim(comment.GetBody()))
 	return nil
 }
 
 func (s StdoutStorer) SavePullRequestReview(review *github.PullRequestReview) error {
-	fmt.Printf("PR review data fetched %v by %s %v: %v\n", review.GetPullRequestURL(), review.GetUser().GetLogin(), review.GetState(), trim(review.GetBody()))
+	fmt.Printf("  PR review data fetched %v by %s %v: %q\n", review.GetPullRequestURL(), review.GetUser().GetLogin(), review.GetState(), trim(review.GetBody()))
 	return nil
 }
 

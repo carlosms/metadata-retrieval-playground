@@ -32,7 +32,7 @@ func NewMigrationDownloader(httpClient *http.Client) (*GitHubMigrationDownloader
 	}
 
 	return &GitHubMigrationDownloader{
-		client: c,
+		client: github.NewClient(c),
 	}, nil
 }
 
