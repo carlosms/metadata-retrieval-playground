@@ -28,9 +28,10 @@ type Ref struct {
 // RepositoryFields defines the fields for Repository, containing only the
 // fields from https://developer.github.com/v4/interface/repositoryinfo/
 type RepositoryFields struct {
-	CreatedAt        time.Time
-	Description      string
-	DescriptionHTML  string `graphql:"descriptionHTML"`
+	CreatedAt   time.Time
+	DatabaseId  int
+	Description string
+	//DescriptionHTML  string `graphql:"descriptionHTML"`
 	ForkCount        int
 	HasIssuesEnabled bool
 	HasWikiEnabled   bool
@@ -43,14 +44,14 @@ type RepositoryFields struct {
 	IsTemplate       bool
 	//LicenseInfo: License
 	//LockReason: RepositoryLockReason
-	MirrorUrl                string
-	Name                     string
-	NameWithOwner            string
-	OpenGraphImageUrl        string
-	Owner                    Actor
-	PushedAt                 time.Time
-	ResourcePath             string
-	ShortDescriptionHTML     string `graphql:"shortDescriptionHTML"`
+	MirrorUrl         string
+	Name              string
+	NameWithOwner     string
+	OpenGraphImageUrl string
+	Owner             Actor
+	PushedAt          time.Time
+	ResourcePath      string
+	//ShortDescriptionHTML     string `graphql:"shortDescriptionHTML"`
 	UpdatedAt                time.Time
 	Url                      string
 	UsesCustomOpenGraphImage bool
@@ -89,9 +90,9 @@ type IssueFields struct {
 	//comments
 	CreatedAt       time.Time
 	CreatedViaEmail bool
-	//DatabaseId      int
+	DatabaseId      int
 	//Editor: Actor
-	Id                  string
+	//Id                  string
 	IncludesCreatedEdit bool
 	//labels
 	LastEditedAt time.Time
@@ -125,11 +126,11 @@ type IssueComment struct {
 	Body string
 	//bodyHTML: HTML!
 	//BodyText            string
-	CreatedAt           time.Time
-	CreatedViaEmail     bool
-	DatabaseId          int
-	Editor              Actor
-	Id                  string
+	CreatedAt       time.Time
+	CreatedViaEmail bool
+	DatabaseId      int
+	Editor          Actor
+	//Id                  string
 	IncludesCreatedEdit bool
 	IsMinimized         bool
 	LastEditedAt        time.Time

@@ -2,13 +2,13 @@ package v4
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/carlosms/metadata-retrieval-playground"
 	"github.com/carlosms/metadata-retrieval-playground/internal/client"
-	"github.com/carlosms/metadata-retrieval-playground/internal/store"
 	"github.com/shurcooL/githubv4"
 	"gopkg.in/src-d/go-log.v1"
 )
@@ -31,10 +31,23 @@ import (
 //     }
 //   }
 // }
-const pageList = 75
+const pageList = 40
+
+type storer interface {
+	saveRepository(repository *RepositoryFields) error
+	saveIssue(repositoryOwner, repositoryName string, issue *Issue) error
+	saveIssueComment(repositoryOwner, repositoryName string, issueNumber int, comment *IssueComment) error
+	savePullRequest(pr *PullRequest) error
+	savePullRequestReview(review *PullRequestReview) error
+	saveReviewComment(comment *PullRequestReviewComment) error
+
+	begin() error
+	commit() error
+	rollback() error
+}
 
 type GitHubDownloader struct {
-	store.Storer
+	storer
 
 	client *githubv4.Client
 }
@@ -48,13 +61,40 @@ func NewStdoutDownloader(httpClient *http.Client) (*GitHubDownloader, error) {
 	}
 
 	return &GitHubDownloader{
-		Storer: store.StdoutStorer{},
+		storer: &stdoutStorer{},
+		client: githubv4.NewClient(c),
+	}, nil
+}
+
+func NewDBDownloader(httpClient *http.Client, db *sql.DB) (*GitHubDownloader, error) {
+	c, err := client.NewClient(httpClient)
+	if err != nil {
+		return nil, err
+	}
+
+	return &GitHubDownloader{
+		storer: &dbStorer{db: db},
 		client: githubv4.NewClient(c),
 	}, nil
 }
 
 func (d GitHubDownloader) DownloadRepository(owner string, name string, version string) error {
 	logger := log.New(log.Fields{"owner": owner, "repo": name})
+
+	var err error
+	err = d.storer.begin()
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		if err != nil {
+			d.storer.rollback()
+			return
+		}
+
+		d.storer.commit()
+	}()
 
 	rate0, err := d.rateRemaining()
 	if err != nil {
@@ -82,7 +122,10 @@ func (d GitHubDownloader) DownloadRepository(owner string, name string, version 
 		return err
 	}
 
-	saveRepository(&q.Repository.RepositoryFields)
+	err = d.storer.saveRepository(&q.Repository.RepositoryFields)
+	if err != nil {
+		return err
+	}
 
 	elapsed := time.Since(t0)
 	logger.With(log.Fields{"elapsed": elapsed}).Infof("repository metadata fetched")
@@ -139,7 +182,7 @@ func (d GitHubDownloader) rateRemaining() (int, error) {
 
 func (d GitHubDownloader) downloadIssues(logger log.Logger, owner string, name string, repository *Repository) error {
 	process := func(issue *Issue) error {
-		err := saveIssue(issue)
+		err := d.storer.saveIssue(owner, name, issue)
 		if err != nil {
 			return err
 		}
@@ -199,7 +242,7 @@ func (d GitHubDownloader) downloadIssues(logger log.Logger, owner string, name s
 func (d GitHubDownloader) downloadIssueComments(logger log.Logger, owner string, name string, issue *Issue) error {
 	// save first page of comments
 	for _, comment := range issue.Comments.Nodes {
-		err := saveIssueComment(&comment)
+		err := d.storer.saveIssueComment(owner, name, issue.Number, &comment)
 		if err != nil {
 			return err
 		}
@@ -236,7 +279,7 @@ func (d GitHubDownloader) downloadIssueComments(logger log.Logger, owner string,
 		}
 
 		for _, comment := range q.Repository.Issue.Comments.Nodes {
-			err := saveIssueComment(&comment)
+			err := d.storer.saveIssueComment(owner, name, issue.Number, &comment)
 			if err != nil {
 				return err
 			}
@@ -251,7 +294,7 @@ func (d GitHubDownloader) downloadIssueComments(logger log.Logger, owner string,
 
 func (d GitHubDownloader) downloadPullRequests(logger log.Logger, owner string, name string, repository *Repository) error {
 	process := func(pr *PullRequest) error {
-		err := savePullRequest(pr)
+		err := d.storer.savePullRequest(pr)
 		if err != nil {
 			return err
 		}
@@ -322,7 +365,7 @@ func (d GitHubDownloader) downloadPullRequests(logger log.Logger, owner string, 
 func (d GitHubDownloader) downloadPullRequestComments(logger log.Logger, owner string, name string, pr *PullRequest) error {
 	// save first page of comments
 	for _, comment := range pr.Comments.Nodes {
-		err := saveIssueComment(&comment)
+		err := d.storer.saveIssueComment(owner, name, pr.Number, &comment)
 		if err != nil {
 			return err
 		}
@@ -359,7 +402,7 @@ func (d GitHubDownloader) downloadPullRequestComments(logger log.Logger, owner s
 		}
 
 		for _, comment := range q.Repository.PullRequest.Comments.Nodes {
-			err := saveIssueComment(&comment)
+			err := d.storer.saveIssueComment(owner, name, pr.Number, &comment)
 			if err != nil {
 				return err
 			}
@@ -374,7 +417,7 @@ func (d GitHubDownloader) downloadPullRequestComments(logger log.Logger, owner s
 
 func (d GitHubDownloader) downloadPullRequestReviews(logger log.Logger, owner string, name string, pr *PullRequest) error {
 	process := func(review *PullRequestReview) error {
-		err := savePullRequestReview(review)
+		err := d.storer.savePullRequestReview(review)
 		if err != nil {
 			return err
 		}
@@ -432,10 +475,10 @@ func (d GitHubDownloader) downloadPullRequestReviews(logger log.Logger, owner st
 	return nil
 }
 
-func (d GitHubDownloader) downloadReviewComments(logger log.Logger, owner string, name string, issueNumber int, review *PullRequestReview) error {
+func (d GitHubDownloader) downloadReviewComments(logger log.Logger, repositoryOwner, repositoryName string, issueNumber int, review *PullRequestReview) error {
 	// save first page of comments
 	for _, comment := range review.Comments.Nodes {
-		err := saveReviewComment(&comment)
+		err := d.storer.saveReviewComment(&comment)
 		if err != nil {
 			return err
 		}
@@ -461,48 +504,11 @@ func (d GitHubDownloader) downloadReviewComments(logger log.Logger, owner string
 
 	return nil
 }
+
 func (d GitHubDownloader) DownloadOrg(name string, version string) error {
 	return fmt.Errorf("not implemented")
 }
 
 func (d GitHubDownloader) SetCurrent(version string) error {
 	return fmt.Errorf("not implemented")
-}
-
-func saveRepository(repository *RepositoryFields) error {
-	fmt.Printf("repository data fetched for %s/%s\n", repository.Owner.Login, repository.Name)
-	return nil
-}
-
-func saveIssue(issue *Issue) error {
-	fmt.Printf("issue data fetched for #%v %s\n", issue.Number, issue.Title)
-	return nil
-}
-
-func saveIssueComment(comment *IssueComment) error {
-	fmt.Printf("  issue comment data fetched by %s at %v: %q\n", comment.Author.Login, comment.CreatedAt, trim(comment.Body))
-	return nil
-}
-
-func savePullRequest(pr *PullRequest) error {
-	fmt.Printf("PR data fetched for #%v %s\n", pr.Number, pr.Title)
-	return nil
-}
-
-func savePullRequestReview(review *PullRequestReview) error {
-	fmt.Printf("  PR Review data fetched by %s at %v: %q\n", review.Author.Login, review.CreatedAt, trim(review.Body))
-	return nil
-}
-
-func saveReviewComment(comment *PullRequestReviewComment) error {
-	fmt.Printf("    PR review comment data fetched by %s at %v: %q\n", comment.Author.Login, comment.CreatedAt, trim(comment.Body))
-	return nil
-}
-
-func trim(s string) string {
-	if len(s) > 40 {
-		return s[0:39] + "..."
-	}
-
-	return s
 }
