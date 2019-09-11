@@ -48,6 +48,13 @@ func (s *stdoutStorer) rollback() error {
 	return nil
 }
 
+func (s *stdoutStorer) version(v string) {
+}
+
+func (s *stdoutStorer) setActiveVersion(v string) error {
+	return nil
+}
+
 func trim(s string) string {
 	if len(s) > 40 {
 		return s[0:39] + "..."

@@ -44,6 +44,8 @@ type storer interface {
 	begin() error
 	commit() error
 	rollback() error
+	version(v string)
+	setActiveVersion(v string) error
 }
 
 type GitHubDownloader struct {
@@ -80,6 +82,8 @@ func NewDBDownloader(httpClient *http.Client, db *sql.DB) (*GitHubDownloader, er
 
 func (d GitHubDownloader) DownloadRepository(owner string, name string, version string) error {
 	logger := log.New(log.Fields{"owner": owner, "repo": name})
+
+	d.storer.version(version)
 
 	var err error
 	err = d.storer.begin()
@@ -510,5 +514,5 @@ func (d GitHubDownloader) DownloadOrg(name string, version string) error {
 }
 
 func (d GitHubDownloader) SetCurrent(version string) error {
-	return fmt.Errorf("not implemented")
+	return d.storer.setActiveVersion(version)
 }

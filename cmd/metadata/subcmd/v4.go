@@ -3,6 +3,7 @@ package subcmd
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	v4 "github.com/carlosms/metadata-retrieval-playground/v4"
 	"github.com/golang-migrate/migrate/v4"
@@ -19,8 +20,9 @@ type V4Command struct {
 
 	LogHTTP bool `long:"log-http" description:"log http requests (debug level)"`
 
-	DB    string `long:"db" description:"PostgreSQL URL connection string, e.g. postgres://user:password@127.0.0.1:5432/ghsync?sslmode=disable"`
-	Token string `long:"token" short:"t" env:"SOURCED_GITHUB_TOKEN" description:"GitHub personal access token" required:"true"`
+	DB      string `long:"db" description:"PostgreSQL URL connection string, e.g. postgres://user:password@127.0.0.1:5432/ghsync?sslmode=disable"`
+	Token   string `long:"token" short:"t" env:"SOURCED_GITHUB_TOKEN" description:"GitHub personal access token" required:"true"`
+	Version string `long:"version" description:"Version tag in the DB"`
 
 	Owner string `long:"owner"  required:"true"`
 	Name  string `long:"name"  required:"true"`
@@ -68,7 +70,16 @@ func (c *V4Command) Execute(args []string) error {
 		downloader, err = v4.NewDBDownloader(client, db)
 	}
 
-	return downloader.DownloadRepository(c.Owner, c.Name, "v0")
+	version := c.Version
+	if version == "" {
+		version = time.Now().Format("2006-01-02 15:04:05")
+	}
+	err := downloader.DownloadRepository(c.Owner, c.Name, version)
+	if err != nil {
+		return err
+	}
+
+	return downloader.SetCurrent(version)
 }
 
 func (c *V4Command) dbMigrate() error {
