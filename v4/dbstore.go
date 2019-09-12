@@ -31,27 +31,33 @@ func (s *dbStorer) version(v string) {
 	s.v = v
 }
 
+const (
+	repositoriesCols  = "database_id, created_at, description, owner, name"
+	issuesCols        = "database_id, title, body, number, repository_owner, repository_name"
+	issueCommentsCols = "database_id, author, body, repository_owner, repository_name, issue_number"
+)
+
 func (s *dbStorer) setActiveVersion(v string) error {
 	// TODO: for some reason the normal parameter interpolation $1 fails with
 	// pq: got 1 parameters but the statement requires 0
 
 	_, err := s.db.Exec(fmt.Sprintf(`CREATE OR REPLACE VIEW repositories AS
-	SELECT database_id, created_at, description, owner, name
-	FROM repositories_versioned WHERE '%s' = ANY(versions)`, v))
+	SELECT %s
+	FROM repositories_versioned WHERE '%s' = ANY(versions)`, repositoriesCols, v))
 	if err != nil {
 		return err
 	}
 
 	_, err = s.db.Exec(fmt.Sprintf(`CREATE OR REPLACE VIEW issues AS
-	SELECT database_id, title, body, number, repository_owner, repository_name
-	FROM issues_versioned WHERE '%s' = ANY(versions)`, v))
+	SELECT %s
+	FROM issues_versioned WHERE '%s' = ANY(versions)`, issuesCols, v))
 	if err != nil {
 		return err
 	}
 
 	_, err = s.db.Exec(fmt.Sprintf(`CREATE OR REPLACE VIEW issue_comments AS
-	SELECT database_id, author, body, repository_owner, repository_name, issue_number
-	FROM issue_comments_versioned WHERE '%s' = ANY(versions)`, v))
+	SELECT %s
+	FROM issue_comments_versioned WHERE '%s' = ANY(versions)`, issueCommentsCols, v))
 	if err != nil {
 		return err
 	}
@@ -81,13 +87,16 @@ func (s *dbStorer) cleanup(currentVersion string) error {
 }
 
 func (s *dbStorer) saveRepository(repository *RepositoryFields) error {
-	_, err := s.tx.Exec(
+	statement := fmt.Sprintf(
 		`INSERT INTO repositories_versioned
-		(versions, database_id, created_at, description, owner, name)
+		(versions, %s)
 		VALUES (array[$1], $2, $3, $4, $5, $6)
-		ON CONFLICT (database_id, created_at, description, owner, name)
+		ON CONFLICT (%s)
 		DO UPDATE
 		SET versions = array_append(repositories_versioned.versions, $1)`,
+		repositoriesCols, repositoriesCols)
+
+	_, err := s.tx.Exec(statement,
 		s.v,
 		repository.DatabaseId, repository.CreatedAt, repository.Description,
 		repository.Owner.Login, repository.Name)
@@ -96,13 +105,16 @@ func (s *dbStorer) saveRepository(repository *RepositoryFields) error {
 }
 
 func (s *dbStorer) saveIssue(repositoryOwner, repositoryName string, issue *Issue) error {
-	_, err := s.tx.Exec(
+	statement := fmt.Sprintf(
 		`INSERT INTO issues_versioned
-		(versions, database_id, title, body, number, repository_owner, repository_name)
+		(versions, %s)
 		VALUES (array[$1], $2, $3, $4, $5, $6, $7)
-		ON CONFLICT (database_id, title, body, number, repository_owner, repository_name)
+		ON CONFLICT (%s)
 		DO UPDATE
 		SET versions = array_append(issues_versioned.versions, $1)`,
+		issuesCols, issuesCols)
+
+	_, err := s.tx.Exec(statement,
 		s.v,
 		issue.DatabaseId, issue.Title, issue.Body, issue.Number,
 		repositoryOwner, repositoryName)
@@ -111,13 +123,15 @@ func (s *dbStorer) saveIssue(repositoryOwner, repositoryName string, issue *Issu
 }
 
 func (s *dbStorer) saveIssueComment(repositoryOwner, repositoryName string, issueNumber int, comment *IssueComment) error {
-	_, err := s.tx.Exec(
-		`INSERT INTO issue_comments_versioned
-		(versions, database_id, author, body, repository_owner, repository_name, issue_number)
+	statement := fmt.Sprintf(`INSERT INTO issue_comments_versioned
+		(versions, %s)
 		VALUES (array[$1], $2, $3, $4, $5, $6, $7)
-		ON CONFLICT (database_id, author, body, repository_owner, repository_name, issue_number)
+		ON CONFLICT (%s)
 		DO UPDATE
 		SET versions = array_append(issue_comments_versioned.versions, $1)`,
+		issueCommentsCols, issueCommentsCols)
+
+	_, err := s.tx.Exec(statement,
 		s.v,
 		comment.DatabaseId, comment.Author.Login, comment.Body,
 		repositoryName, repositoryOwner, issueNumber)
