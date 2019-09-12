@@ -23,6 +23,7 @@ type V4Command struct {
 	DB      string `long:"db" description:"PostgreSQL URL connection string, e.g. postgres://user:password@127.0.0.1:5432/ghsync?sslmode=disable"`
 	Token   string `long:"token" short:"t" env:"SOURCED_GITHUB_TOKEN" description:"GitHub personal access token" required:"true"`
 	Version string `long:"version" description:"Version tag in the DB"`
+	Cleanup bool   `long:"cleanup" description:"Does a garbage collection on the DB, deleting data from other versions"`
 
 	Owner string `long:"owner"  required:"true"`
 	Name  string `long:"name"  required:"true"`
@@ -79,7 +80,16 @@ func (c *V4Command) Execute(args []string) error {
 		return err
 	}
 
-	return downloader.SetCurrent(version)
+	err = downloader.SetCurrent(version)
+	if err != nil {
+		return err
+	}
+
+	if c.Cleanup {
+		return downloader.Cleanup(version)
+	}
+
+	return nil
 }
 
 func (c *V4Command) dbMigrate() error {

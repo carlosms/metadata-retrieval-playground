@@ -46,6 +46,7 @@ type storer interface {
 	rollback() error
 	version(v string)
 	setActiveVersion(v string) error
+	cleanup(currentVersion string) error
 }
 
 type GitHubDownloader struct {
@@ -515,4 +516,9 @@ func (d GitHubDownloader) DownloadOrg(name string, version string) error {
 
 func (d GitHubDownloader) SetCurrent(version string) error {
 	return d.storer.setActiveVersion(version)
+}
+
+// Cleanup deletes from the DB all records that do not belong to the currentVersion
+func (d GitHubDownloader) Cleanup(currentVersion string) error {
+	return d.storer.cleanup(currentVersion)
 }

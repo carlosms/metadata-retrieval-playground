@@ -55,6 +55,10 @@ func (s *stdoutStorer) setActiveVersion(v string) error {
 	return nil
 }
 
+func (s *stdoutStorer) cleanup(currentVersion string) error {
+	return nil
+}
+
 func trim(s string) string {
 	if len(s) > 40 {
 		return s[0:39] + "..."

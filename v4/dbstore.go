@@ -59,6 +59,27 @@ func (s *dbStorer) setActiveVersion(v string) error {
 	return nil
 }
 
+func (s *dbStorer) cleanup(currentVersion string) error {
+	tables := []string{"repositories_versioned", "issues_versioned", "issue_comments_versioned"}
+
+	for _, table := range tables {
+		// Delete all entries that do not belong to currentVersion
+		_, err := s.db.Exec(fmt.Sprintf(`DELETE FROM %s WHERE '%s' <> ALL(versions)`, table, currentVersion))
+		if err != nil {
+			return err
+		}
+
+		// All remaining entries belong to currentVersion, replace the list of versions
+		// with an array of 1 entry
+		_, err = s.db.Exec(fmt.Sprintf(`UPDATE %s SET versions = array['%s']`, table, currentVersion))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (s *dbStorer) saveRepository(repository *RepositoryFields) error {
 	_, err := s.tx.Exec(
 		`INSERT INTO repositories_versioned
